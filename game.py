@@ -76,7 +76,7 @@ class Game:
         self.wall_collide_dic["DOWN"] = self.player.rect[1] + self.player.rect[
             3] >= self.arena.height - self.arena.borders_thickness
 
-    def player_shooting(self, rafale=False, direction= None):
+    def player_shooting(self, rafale=False, direction=None):
         if direction == "up":
             if self.anti_rafale(pygame.MOUSEBUTTONDOWN):
                 projectile = (Projectile((self.player.rect.center[0], self.player.rect.center[1] - 1), self.player))
