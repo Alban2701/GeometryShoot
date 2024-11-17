@@ -9,9 +9,9 @@ class Projectile:
         pour un ennemi, le joueur), et l'entité génératrice du projectile (le joueur ou l'ennemi)"""
         self.entity_center = entity.rect.center
         self.start_pos = self.entity_center
-        self.width = 3  # 3 pixels de largeur
-        self.length = 6  # 6 pixel de longueur
-        self.velocity = 8  # Vitesse du projectile
+        self.width = 3  # pixels de largeur
+        self.length = 10  # pixel de longueur
+        self.velocity = 10  # Vitesse du projectile
         self.direction = direction
         self.opposite_direction = self.set_opposite_direction()
         self.end_pos = self.get_coord_arrivee(self.start_pos, self.length)
@@ -25,12 +25,11 @@ class Projectile:
     def get_c_dir(self):
         """Prend 2 couples de coordonnées en paramètre et calcule le coefficient directeur de la droite passant par
         ces deux points"""
-        if self.direction[0] - self.entity_center[0] == 0:
-            if self.direction[1] - self.entity_center[1] <= 0:
+        if self.direction[0] - self.start_pos[0] == 0:
+            if self.direction[1] - self.start_pos[1] <= 0:
                 return "up"
             else:
                 return "down"
-
         return (self.direction[1] - self.start_pos[1]) / (self.direction[0] - self.start_pos[0])
 
     def get_coord_arrivee(self, start_pos, distance):
@@ -70,7 +69,7 @@ class Projectile:
         self.end_pos = x4, y4
 
     def update_line(self, surface):
-        return pygame.draw.line(surface, self.color, self.start_pos, self.end_pos)
+        return pygame.draw.line(surface, self.color, self.start_pos, self.end_pos, width=self.width)
 
     def set_opposite_direction(self):
         """Cherche à savoir si l'entité tire à gauche d'elle-même ou à droite afin de déterminer correctement

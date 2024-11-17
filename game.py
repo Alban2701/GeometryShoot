@@ -8,6 +8,7 @@ from square import Square
 from enemy import Enemy
 from screen import Screen
 from player import Player
+import time as tm
 
 
 # Créer une classe qui représente le jeu
@@ -21,6 +22,8 @@ class Game:
         self.wall_collide_dic = {"LEFT": False, "UP": False, "RIGHT": False, "DOWN": False}
         # Ce dictionnaire varie ses valeurs en fonction des collisions de murs avec le joueur
         self.projectiles = []  # Liste qui va contenir tous les projectiles que le joueur va tirer
+        self.last_shoot = 0  # Le dernier moment où le joueur à tirer
+        self.fire_rate = 2  # Nombre de tir par secondes
         self.player_is_shooting = False
         self.wave = 0  # le nombre de vague d'ennemis
         self.running = True  # Est-ce que le jeu est en cours d'execution
@@ -78,13 +81,13 @@ class Game:
 
     def player_shooting(self, rafale=False, direction=None):
         if direction == "up":
-            if self.anti_rafale(pygame.MOUSEBUTTONDOWN):
+            if self.auto_shoot(pygame.MOUSEBUTTONDOWN):
                 projectile = (Projectile((self.player.rect.center[0], self.player.rect.center[1] - 1), self.player))
                 self.projectiles.append(projectile)
                 # print(projectile)
 
         elif direction == "down":
-            if self.anti_rafale(pygame.MOUSEBUTTONDOWN):
+            if self.auto_shoot(pygame.MOUSEBUTTONDOWN):
                 projectile = (Projectile((self.player.rect.center[0], self.player.rect.center[1] + 1), self.player))
                 self.projectiles.append(projectile)
 
@@ -95,7 +98,7 @@ class Game:
                 self.projectiles.append(Projectile((x, y), self.player))
 
         else :
-            if self.anti_rafale(pygame.MOUSEBUTTONDOWN):
+            if self.auto_shoot(pygame.MOUSEBUTTONDOWN):
                 x, y = pygame.mouse.get_pos()
                 projectile = (Projectile((x, y), self.player))
                 self.projectiles.append(projectile)
@@ -111,7 +114,18 @@ class Game:
             self.anti_rafale_pressed[key] = False
             return True
 
-    #GESTIONS DES ACTIONS NON JOUEURS
+    def auto_shoot(self, key):
+        """Teste si le joueur peut tirer ou pas, en fonction du click ou de son firerate"""
+        if self.pressed.get(key):
+            if self.anti_rafale(key) or ((tm.time() - self.last_shoot) > (1 / self.fire_rate)):
+                self.last_shoot = tm.time()
+                return True
+        return False
+
+    def update_last_shoot(self):
+        self.last_shoot = tm.time()
+
+    # GESTIONS DES ACTIONS NON JOUEURS
     def remove_proj_out_of_arena(self, projectile, arena):
         """teste si le projectile se trouve encore dans l'arène.
         Si le projectile n'est plus partiellement, alors la ligne qui le dessine est raccouris

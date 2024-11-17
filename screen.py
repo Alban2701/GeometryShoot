@@ -3,7 +3,7 @@ import pygame
 
 class Screen(pygame.surface.Surface):
     def __init__(self):
-        self.size = (720, 480)  # Taille de la fenêtre
+        self.size = (1280, 720)  # Taille de la fenêtre
         super().__init__(self.size)
         self.title = "Geometry Shoot"  # Tite de la fenêtre
         self.display = None  # Variable qui va accueillir l'instance de la fenêtre afin de la manipuler
